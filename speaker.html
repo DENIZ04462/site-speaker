@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Fiche Haut-Parleur</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 20px; }
+    img { max-width: 300px; display: block; margin-bottom: 20px; }
+    ul { list-style: none; padding: 0; }
+    li { margin-bottom: 5px; }
+  </style>
+</head>
+<body>
+  <h1 id="nom">Chargement...</h1>
+  <img id="image" src="" alt="Image du haut-parleur">
+  <ul id="specs"></ul>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    fetch("data/speakers.json")
+      .then(res => res.json())
+      .then(data => {
+        const speaker = data[id];
+        if (!speaker) {
+          document.body.innerHTML = "<h2>Haut-parleur introuvable</h2>";
+          return;
+        }
+        document.getElementById("nom").textContent = speaker.nom;
+        document.getElementById("image").src = speaker.image;
+
+        const specsList = document.getElementById("specs");
+        for (const [key, value] of Object.entries(speaker)) {
+          if (key !== "nom" && key !== "image") {
+            const li = document.createElement("li");
+            li.innerHTML = `<strong>${key.charAt(0).toUpperCase() + key.slice(1)}:</strong> ${value}`;
+            specsList.appendChild(li);
+          }
+        }
+      });
+  </script>
+</body>
+</html>
